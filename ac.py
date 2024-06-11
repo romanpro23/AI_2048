@@ -67,20 +67,16 @@ class ActorCriticAgent(Agent):
         return action
 
     def replay(self, *args):
-        # Convert memory to batches
         states = torch.FloatTensor(np.stack([item[0] for item in self.memory]))
         actions = torch.LongTensor(np.stack([item[1] for item in self.memory]))
         rewards = torch.FloatTensor(np.stack([item[2] for item in self.memory]))
         next_states = torch.FloatTensor(np.stack([item[3] for item in self.memory]))
         dones = torch.FloatTensor(np.stack([item[4] for item in self.memory]))
 
-        # Critic update
         values = self.critic(states).squeeze()
         values = values.unsqueeze(0) if len(values.shape) == 0 else values
-
         next_values = self.critic(next_states).squeeze()
         next_values = next_values.unsqueeze(0) if len(next_values.shape) == 0 else next_values
-
         targets = rewards + (1 - dones) * self.gamma * next_values
         critic_loss = nn.MSELoss()(values, targets.detach())
 
@@ -88,7 +84,6 @@ class ActorCriticAgent(Agent):
         critic_loss.backward()
         self.optimizer_critic.step()
 
-        # Actor update
         action_probs = self.actor(states)
         log_probs = torch.log(action_probs[range(len(actions)), actions])
         actor_loss = -(log_probs * values.detach()).mean()
@@ -96,7 +91,6 @@ class ActorCriticAgent(Agent):
         self.optimizer_actor.zero_grad()
         actor_loss.backward()
         self.optimizer_actor.step()
-
         self.memory = []
 
     def get_weights(self):
@@ -123,20 +117,16 @@ class A2CAgent(ActorCriticAgent):
         return "AdvantageAC"
 
     def replay(self, *args):
-        # Convert memory to batches
         states = torch.FloatTensor(np.stack([item[0] for item in self.memory]))
         actions = torch.LongTensor(np.stack([item[1] for item in self.memory]))
         rewards = torch.FloatTensor(np.stack([item[2] for item in self.memory]))
         next_states = torch.FloatTensor(np.stack([item[3] for item in self.memory]))
         dones = torch.FloatTensor(np.stack([item[4] for item in self.memory]))
 
-        # Critic update
         values = self.critic(states).squeeze()
         values = values.unsqueeze(0) if len(values.shape) == 0 else values
-
         next_values = self.critic(next_states).squeeze()
         next_values = next_values.unsqueeze(0) if len(next_values.shape) == 0 else next_values
-
         targets = rewards + (1 - dones) * self.gamma * next_values
         critic_loss = nn.MSELoss()(values, targets.detach())
 
@@ -144,7 +134,6 @@ class A2CAgent(ActorCriticAgent):
         critic_loss.backward()
         self.optimizer_critic.step()
 
-        # Actor update
         advantages = (targets - values).detach()
         action_probs = self.actor(states)
         log_probs = torch.log(action_probs[range(len(actions)), actions])
@@ -153,5 +142,4 @@ class A2CAgent(ActorCriticAgent):
         self.optimizer_actor.zero_grad()
         actor_loss.backward()
         self.optimizer_actor.step()
-
         self.memory = []

@@ -30,8 +30,8 @@ class DQNAgent(Agent):
         self.memory_len = 10000
         self.memory = deque(maxlen=self.memory_len)
 
-        self.gamma = 0.9  # discount rate
-        self.epsilon = 1.0  # exploration rate
+        self.gamma = 0.9
+        self.epsilon = 1.0
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.99
         self.model = DQN(state_size, action_size)

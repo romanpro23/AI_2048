@@ -71,12 +71,10 @@ class PPOAgent(Agent):
         return action
 
     def replay(self):
-        # Prepare batches
         states = torch.FloatTensor(np.stack([item[0] for item in self.memory]))
         actions = torch.LongTensor(np.stack([item[1] for item in self.memory]))
         old_log_probs = torch.FloatTensor([item[3] for item in self.memory]).detach()
 
-        # Compute rewards-to-go
         R = 0
         rewards = []
         for _, _, r, _ in self.memory[::-1]:
@@ -94,7 +92,6 @@ class PPOAgent(Agent):
             advantages = rewards - values.detach()
 
             ratios = torch.exp(new_log_probs - old_log_probs)
-
             surr1 = ratios * advantages
             surr2 = torch.clamp(ratios, 1 - self.eps_clip, 1 + self.eps_clip) * advantages
             policy_loss = -torch.min(surr1, surr2).mean()

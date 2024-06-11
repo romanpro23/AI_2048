@@ -1,4 +1,7 @@
+import random
 import sys
+
+import numpy as np
 
 from ac import ActorCriticAgent, A2CAgent
 from agent import Agent
@@ -42,7 +45,12 @@ class Game:
         self.actions = []
         self.manual_control = False
 
+        self.max_val = 0
+
         self.agent_name = "dqn"
+
+        self.additional_train = 0
+        self.time_board = False
 
     def run(self):
         running = True
@@ -81,7 +89,20 @@ class Game:
                 if isinstance(self.agent, DQNAgent):
                     self.agent.replay()
 
+                if self.additional_train == 0 and np.max(self.board.tiles) == random.choice([128, 256, 512]):
+                    self.time_board = self.board.tiles.copy()
+                    self.additional_train = 1
+
                 if done:
+                    max_val = np.max(self.board.tiles)
+                    if max_val > self.max_val:
+                        self.max_val = max_val
+                        print(self.max_val)
+                        self.agent.save("models/best_a2c")
+
+                    if self.additional_train == -1:
+                        self.additional_train = 0
+
                     self.restart(moves)
                     self.agent.replay()
 
@@ -182,9 +203,13 @@ class Game:
             self.moves_history.append(moves)
             self.scores_history.append(self.score)
 
-        self.board = Board()
-        self.board.add_new_tile()
-        self.board.add_new_tile()
+        if self.additional_train == 1:
+            self.board.tiles = self.time_board
+            self.additional_train = -1
+        else:
+            self.board = Board()
+            self.board.add_new_tile()
+            self.board.add_new_tile()
         self.score = 0
 
     def draw_monitoring(self, surface):

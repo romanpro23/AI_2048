@@ -11,10 +11,8 @@ class HelpWindow:
         self.visible = False
 
     def draw(self, surface):
-        # Fill the help window background
         self.window_surface.fill(BACKGROUND_COLOR)
 
-        # Help text lines
         help_text = [
             "Help Window",
             "",
@@ -31,7 +29,6 @@ class HelpWindow:
             "ESC: Quit the game"
         ]
 
-        # Render and draw each line of help text
         small_font = pygame.font.Font(None, 24)
         title_font = pygame.font.Font(None, 32)
         for i, text in enumerate(help_text):
