@@ -1,4 +1,4 @@
-**2048 AI**
+# 2048 AI
 
   Artificial intelligence is one of the most exciting and rapidly changing fields in modern science. The use of neural networks in various spheres of life reproduces the possibilities of human thinking and opens many new perspectives in the development of software products and systems.
 The object of the work is the development of a learning demonstration stand with the reinforcement of neural networks, which is based on the popular game "2048". The game "2048" is chosen as an optimal environment for research and demonstration of the capabilities of AI in solving complex tasks.
