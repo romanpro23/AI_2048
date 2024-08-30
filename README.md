@@ -9,8 +9,6 @@ The object of the work is the development of a learning demonstration stand with
   
   The results obtained in the form of stored trained models and their weights for later use, will allow to reproduce the experience accumulated by the agent during training on the same device in any subsequent game, without the need to train the agent again. In addition, the game "2048" itself, with all the mechanics, will be implemented for the research.
 
-**Image demonstation stand**
-
 ![image](https://github.com/user-attachments/assets/d73b3031-69a9-4810-932c-3213cf259521)
 
 You can read the full paper here: https://drive.google.com/file/d/1VigVrnw30LvEaS8kfRvhusfNgLz8iB3I/view?usp=sharing
